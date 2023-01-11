@@ -32,6 +32,11 @@
 }
 
 
+.form textarea::placeholder{
+    margin: 0 auto;
+}
+
+
 .form button[type=submit]{
     padding: 0.9rem 1.5rem;
     margin-top: 1rem;

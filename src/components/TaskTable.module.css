@@ -1,0 +1,93 @@
+.taskTable{
+    width:60%;
+   
+    gap: 1rem;
+
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    margin: 5rem auto;
+
+    
+    
+}
+
+.tableStats{
+    display:flex;
+    justify-content: space-between;
+    
+    margin-bottom: 1.5rem;
+    
+}
+
+
+.createdTasks span{
+    color: var(--blue)
+}
+
+.createdTasks strong{
+    padding: 0 0.5rem;
+    background: var(--gray-400);
+    color: var(--gray-200);
+
+    border-radius: 16px;
+    margin-left: 8px;
+    
+}
+
+.finishedTasks span{
+    color: var(--purple)
+}
+
+.finishedTasks strong{
+    padding: 0 0.5rem;
+    background: var(--gray-400);
+    color: var(--gray-200);
+
+    border-radius: 16px;
+    margin-left: 8px;
+    
+}
+
+.tasksContent{
+    
+    padding: 1rem;
+    display:flex;
+    justify-content: space-between;
+    
+
+    background: var(--gray-400);
+
+    border-radius: 8px;
+  
+}
+
+.tasksContentStart{
+    display:flex;
+    flex-direction: row;
+
+    gap: 1rem;
+    margin: auto 0;
+}
+
+.tasksContent button{
+    background: transparent;
+    border: none;
+
+    color: var(--gray-300);
+    transition: background-color 0.8s;
+}
+
+.tasksContent button:hover{
+    
+    color: var(--gray-600);
+}
+
+.tasksContent input[type="checkbox"]{
+    background: transparent;
+}
+
+
+
