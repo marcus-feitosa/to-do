@@ -1,10 +1,28 @@
 import styles from './TaskTable.module.css'
 import {FaTrashAlt} from 'react-icons/fa'
+import { Task } from './Task'
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { AddTaskBar } from './AddTaskBar';
+
+
 
 export function TaskTable(){
-    return (
-        <div className={styles.taskTable}>
+    const [tasks, setTasks] = useState([
+        "Post muito legal ein"
+      
+    ])
 
+    function deleteTask(taskToDelete: string){
+        const tasksWithoutDeletedOne = tasks.filter(task => {
+            return task !== taskToDelete;
+        })
+        setTasks(tasksWithoutDeletedOne);
+    }
+    return (
+        <>
+        <AddTaskBar/>
+        <div className={styles.taskTable}>
+            
             <div className={styles.tableStats}>
                 <div className={styles.createdTasks}>
                     <span>Tarefas criadas<strong>5</strong></span>
@@ -14,32 +32,10 @@ export function TaskTable(){
                 </div>
             </div>
 
-
-            <div className={styles.tasksContent}>
-                <div className={styles.tasksContentStart}>
-                <input type="checkbox"/>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                </div>
-                <button><FaTrashAlt /></button>
-            </div>
-
-            
-            <div className={styles.tasksContent}>
-                <div className={styles.tasksContentStart}>
-                <input type="checkbox"/>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                </div>
-                <button><FaTrashAlt /></button>
-            </div>
-
-            
-            <div className={styles.tasksContent}>
-                <div className={styles.tasksContentStart}>
-                <input type="checkbox"/>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                </div>
-                <button><FaTrashAlt /></button>
-            </div>
+            {tasks.map(task => {
+                return <Task key={task} taskContent={task} onDeleteTask={deleteTask} />
+               })}
         </div>
+        </>
     )
 }
