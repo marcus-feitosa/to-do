@@ -1,16 +1,17 @@
 import styles from './TaskTable.module.css'
-import {FaTrashAlt} from 'react-icons/fa'
+
 import { Task } from './Task'
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { AddTaskBar } from './AddTaskBar';
+import { FaPlusCircle } from 'react-icons/fa';
 
 
 
 export function TaskTable(){
     const [tasks, setTasks] = useState([
         "Post muito legal ein"
-      
     ])
+
+    const [newTaskText, setNewTaskText] = useState('')
 
     function deleteTask(taskToDelete: string){
         const tasksWithoutDeletedOne = tasks.filter(task => {
@@ -18,9 +19,38 @@ export function TaskTable(){
         })
         setTasks(tasksWithoutDeletedOne);
     }
+   
+    function handleCreateNewTask(event: FormEvent){
+        event.preventDefault()
+        
+        setTasks([...tasks, newTaskText]);
+        setNewTaskText('');
+    }
+    
+    function handleNewTaskChange(event: ChangeEvent<HTMLTextAreaElement>){
+        event.target.setCustomValidity('');
+         setNewTaskText(event.target.value);
+    }
+
     return (
         <>
-        <AddTaskBar/>
+
+        <div onSubmit={handleCreateNewTask} className={styles.divForm}>
+            <form  className={styles.form}>
+                <textarea
+                name="task" 
+                value={newTaskText} 
+                onChange={handleNewTaskChange}
+                placeholder="Adicione uma nova tarefa">
+                </textarea>
+                <button type='submit'>
+                    Criar
+                    <FaPlusCircle/>
+                </button>
+            </form>
+        </div>
+
+
         <div className={styles.taskTable}>
             
             <div className={styles.tableStats}>
