@@ -1,29 +1,32 @@
 import styles from './TaskTable.module.css'
 
 import { Task } from './Task'
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
+import { EmptyScreen } from './EmptyScreen';
 
 
 
 export function TaskTable(){
-    const [tasks, setTasks] = useState([
-        "Post muito legal ein"
-    ])
+    
 
     const [newTaskText, setNewTaskText] = useState('')
 
+    const [newCheck, setNewCheck] = useState(true);
+
+    const [newTasks, setNewTasks] = useState(['Texto']);
+
     function deleteTask(taskToDelete: string){
-        const tasksWithoutDeletedOne = tasks.filter(task => {
+        const tasksWithoutDeletedOne = newTasks.filter(task => {
             return task !== taskToDelete;
         })
-        setTasks(tasksWithoutDeletedOne);
+        setNewTasks(tasksWithoutDeletedOne);
     }
    
     function handleCreateNewTask(event: FormEvent){
         event.preventDefault()
         
-        setTasks([...tasks, newTaskText]);
+        setNewTasks([...newTasks, newTaskText]);
         setNewTaskText('');
     }
     
@@ -32,6 +35,12 @@ export function TaskTable(){
          setNewTaskText(event.target.value);
     }
 
+    function handleChecked(){
+        setNewCheck(!newCheck);
+
+        console.log(newCheck);
+    }
+    
     return (
         <>
 
@@ -55,15 +64,19 @@ export function TaskTable(){
             
             <div className={styles.tableStats}>
                 <div className={styles.createdTasks}>
-                    <span>Tarefas criadas<strong>5</strong></span>
+                    <span>Tarefas criadas<strong>{newTasks.length}</strong></span>
                 </div>
                 <div className={styles.finishedTasks}>
                     <span>Concluidas<strong> 2 de 5</strong></span>
                 </div>
             </div>
 
-            {tasks.map(task => {
-                return <Task key={task} taskContent={task} onDeleteTask={deleteTask} />
+            
+            {newTasks.map(task => { if(newTasks.length==0){
+                return<EmptyScreen/>
+            }else{
+                return <Task className={newCheck ? styles.incompleteTask: styles.completedTask } isChecked={newCheck} key={task} taskContent={task} onDeleteTask={deleteTask} onCheck={handleChecked}/>
+            }
                })}
         </div>
         </>
