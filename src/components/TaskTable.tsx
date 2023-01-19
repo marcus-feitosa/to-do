@@ -1,57 +1,87 @@
 import styles from './TaskTable.module.css'
 
 import { Task } from './Task'
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import { EmptyScreen } from './EmptyScreen';
+import { uuid } from 'uuidv4';
 
-
+export interface Tasks {
+    id: string;
+    done: boolean;
+    content: string;
+  }
 
 export function TaskTable(){
     
 
+    const [tasks, setTasks] = useState<Tasks[]>([])
+
     const [newTaskText, setNewTaskText] = useState('')
 
-    const [newCheck, setNewCheck] = useState(true);
+    function deleteTask(taskToDelete: Tasks) {
+    const taskWhithoutDeletedOne = tasks.filter(task => {
+      return task.id !== taskToDelete.id
+    })
 
-    const [newTasks, setNewTasks] = useState(['Texto']);
+    setTasks(taskWhithoutDeletedOne)
+  }
 
-    function deleteTask(taskToDelete: string){
-        const tasksWithoutDeletedOne = newTasks.filter(task => {
-            return task !== taskToDelete;
-        })
-        setNewTasks(tasksWithoutDeletedOne);
-    }
-   
-    function handleCreateNewTask(event: FormEvent){
-        event.preventDefault()
-        
-        setNewTasks([...newTasks, newTaskText]);
-        setNewTaskText('');
-    }
-    
-    function handleNewTaskChange(event: ChangeEvent<HTMLTextAreaElement>){
-        event.target.setCustomValidity('');
-         setNewTaskText(event.target.value);
-    }
 
-    function handleChecked(){
-        setNewCheck(!newCheck);
+    function handleCreateNewTask(event: FormEvent) {
+    event.preventDefault()
 
-        console.log(newCheck);
-    }
-    
+    setTasks([
+      {
+        id: newTaskText,
+        done: false,
+        content: newTaskText
+      },
+      ...tasks
+    ])
+
+    setNewTaskText('')
+  }
+
+  function handleNewTaskChange(event: ChangeEvent<HTMLInputElement>) {
+    event.target.setCustomValidity('')
+    setNewTaskText(event.target.value)
+  }
+
+  function handleNewTaskInvalid(event: InvalidEvent<HTMLInputElement>) {
+    event.target.setCustomValidity('Esta campo é obrigatório!')
+  }
+
+
+  function doneTask(taskToDone: Tasks) {
+    const taskWhithoutUpdate = tasks.map(task => {
+      if (task.id === taskToDone.id) {
+        return taskToDone
+      } else {
+        return task
+      }
+    })
+
+    setTasks(taskWhithoutUpdate)
+  }
+
+    const totalTasks = tasks.length
+    const totalTasksDone = tasks.filter(
+        task => task.done === true
+    ).length
+
     return (
         <>
-
         <div onSubmit={handleCreateNewTask} className={styles.divForm}>
             <form  className={styles.form}>
-                <textarea
+                <input
                 name="task" 
                 value={newTaskText} 
                 onChange={handleNewTaskChange}
+                onInvalid={handleNewTaskInvalid}
+                required
                 placeholder="Adicione uma nova tarefa">
-                </textarea>
+                </input>
                 <button type='submit'>
                     Criar
                     <FaPlusCircle/>
@@ -64,21 +94,33 @@ export function TaskTable(){
             
             <div className={styles.tableStats}>
                 <div className={styles.createdTasks}>
-                    <span>Tarefas criadas<strong>{newTasks.length}</strong></span>
+                    <span>Tarefas criadas<strong>{totalTasks}</strong></span>
                 </div>
                 <div className={styles.finishedTasks}>
-                    <span>Concluidas<strong> 2 de 5</strong></span>
+                    <span>Concluidas<strong> {totalTasksDone} de {totalTasks}</strong></span>
                 </div>
             </div>
 
             
-            {newTasks.map(task => { if(newTasks.length==0){
-                return<EmptyScreen/>
-            }else{
-                return <Task className={newCheck ? styles.incompleteTask: styles.completedTask } isChecked={newCheck} key={task} taskContent={task} onDeleteTask={deleteTask} onCheck={handleChecked}/>
-            }
-               })}
+        {tasks.length === 0 ? (
+            <EmptyScreen/>
+        ) : (
+        tasks.map(task => {
+          return (
+            <Task
+              key={task.id}
+              taskProps={task}
+              onCheck={doneTask}
+              onDeleteTask={deleteTask}
+            />
+            )
+         })
+        )}
         </div>
         </>
     )
+}
+
+function uuidv4(): string {
+    throw new Error('Function not implemented.');
 }

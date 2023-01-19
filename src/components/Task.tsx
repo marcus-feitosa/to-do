@@ -1,34 +1,36 @@
 import { FaTrashAlt } from 'react-icons/fa'
 import styles from './Task.module.css'
+import { Tasks } from './TaskTable'
 
 interface TaskProps{
-    taskContent:string;
-    isChecked:boolean;
-    className:string;
-    onDeleteTask: (content:string) => void;
-    onCheck: () => void;
+    taskProps: Tasks;
+    onDeleteTask: (task: Tasks) => void;
+    onCheck: (task: Tasks) => void;
 }
 
 
 
 
-export function Task(props:TaskProps){
+export function Task({ taskProps, onDeleteTask, onCheck }: TaskProps){
 
-    function handleDeleteComment(){
-        props.onDeleteTask(props.taskContent);
-        }
-
-    function handleCheck(){
-            props.onCheck();
-            }
+    function handleDoneTask() {
+        const onDone = taskProps.done ? false : true
+    
+        const newTaskProps = { ...taskProps, done: onDone }
+        onCheck(newTaskProps)
+      }
+    
+      function handleDeleteTask() {
+        onDeleteTask(taskProps)
+      }
 
     return(
         <div className={styles.tasksContent}>
                 <div className={styles.tasksContentStart}>
-                <input onChange={handleCheck} type="checkbox"/>
-                <p className={props.className}>{props.taskContent}</p>
+                <input onChange={handleDoneTask} type="checkbox"/>
+                <p className={taskProps.done ? styles.completedTask:styles.incompleteTask}>{taskProps.content}</p>
                 </div>
-                <button onClick={handleDeleteComment}><FaTrashAlt /></button>
+                <button onClick={handleDeleteTask}><FaTrashAlt /></button>
         </div>
     )
 }
